@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Screening</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Edit Screening</h4>
+                </div>
+                <div class="card-body">
+                    <div th:if="${overlapError}" class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span th:text="${overlapError}"></span>
+                    </div>
+
+                    <form th:action="@{/screenings/{id}(id=${screening.id})}" th:object="${screening}" method="post">
+
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="mb-3">
+                            <label class="form-label">Movie *</label>
+                            <select class="form-select" th:field="*{movie.id}" required>
+                                <option th:each="m : ${movies}" th:value="${m.id}" th:text="${m.title}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Cinema Room *</label>
+                            <select class="form-select" th:field="*{cinemaRoom.id}" required>
+                                <option th:each="room : ${cinemaRooms}"
+                                        th:value="${room.id}"
+                                        th:text="${room.roomCode + ' (Capacity: ' + room.capacity + ')'}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Date and Start Time *</label>
+                            <input type="datetime-local" class="form-control" th:field="*{startTime}" required>
+                            <p class="text-danger mt-1" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></p>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a th:href="@{/screenings}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

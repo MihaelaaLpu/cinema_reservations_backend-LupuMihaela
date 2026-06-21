@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Tickets</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Tickets</h2>
+        <a th:href="@{/tickets/new}" class="btn btn-success">Buy Ticket</a>
+    </div>
+
+    <table class="table table-striped table-hover table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>
+                <a class="text-white text-decoration-none" th:href="@{'/tickets/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir}}">
+                    ID
+                </a>
+            </th>
+            <th>
+                <a class="text-white text-decoration-none" th:href="@{'/tickets/page/' + ${currentPage} + '?sortField=price&sortDir=' + ${reverseSortDir}}">
+                    Price
+                </a>
+            </th>
+            <th>
+                <a class="text-white text-decoration-none" th:href="@{'/tickets/page/' + ${currentPage} + '?sortField=seatRow&sortDir=' + ${reverseSortDir}}">
+                    Seat Row
+                </a>
+            </th>
+            <th>
+                <a class="text-white text-decoration-none" th:href="@{'/tickets/page/' + ${currentPage} + '?sortField=seatNumber&sortDir=' + ${reverseSortDir}}">
+                    Seat Number
+                </a>
+            </th>
+
+            <th>
+                <a class="text-white text-decoration-none" th:href="@{'/tickets/page/' + ${currentPage} + '?sortField=purchaseDate&sortDir=' + ${reverseSortDir}}">
+                    Purchase Date
+                </a>
+            </th>
+
+            <th>
+                <a class="text-white text-decoration-none" th:href="@{'/tickets/page/' + ${currentPage} + '?sortField=screening.movie.title&sortDir=' + ${reverseSortDir}}">
+                    Movie
+                </a>
+            </th>
+
+            <th>
+                <a class="text-white text-decoration-none" th:href="@{'/tickets/page/' + ${currentPage} + '?sortField=screening.startTime&sortDir=' + ${reverseSortDir}}">
+                    Start Time
+                </a>
+            </th>
+
+            <th sec:authorize="hasRole('ADMIN')">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="ticket : ${tickets}">
+            <td th:text="${ticket.id}">1</td>
+
+            <td th:text="${ticket.price + ' RON'}">12.99 RON</td>
+
+            <td th:text="${ticket.seatRow}">A</td>
+            <td th:text="${ticket.seatNumber}">14</td>
+
+            <td th:text="${#temporals.format(ticket.purchaseDate, 'dd-MM-yyyy HH:mm')}">2026/01/01</td>
+
+            <td th:text="${ticket.screening.movie.title}">Inception</td>
+            <td th:text="${#temporals.format(ticket.screening.startTime, 'dd-MM-yyyy HH:mm')}">206/01/01</td>
+
+            <td sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/tickets/edit/{id}(id=${ticket.id})}" class="btn btn-primary btn-sm">Edit</a>
+                <a th:href="@{/tickets/delete/{id}(id=${ticket.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure you want to delete this ticket?');">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${totalPages > 1}" class="d-flex justify-content-between align-items-center mt-4">
+        <div>
+            Total Tickets: <span class="fw-bold" th:text="${totalItems}"></span>
+        </div>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination mb-0">
+                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{'/tickets/page/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Back</a>
+                </li>
+
+                <li class="page-item" th:each="i: ${#numbers.sequence(1, totalPages)}" th:classappend="${currentPage == i} ? 'active'">
+                    <a class="page-link" th:href="@{'/tickets/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+                </li>
+
+                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{'/tickets/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Forward</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+</body>
+</html>

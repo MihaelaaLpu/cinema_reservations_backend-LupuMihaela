@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Movies</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Movies</h2>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/movies/new}" class="btn btn-success">Add new</a>
+    </div>
+
+    <table class="table table-striped table-hover table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>
+                <a class="text-white text-decoration-none" th:href="@{'/movies/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir}}">
+                    ID
+                </a>
+            </th>
+            <th>
+                <a class="text-white text-decoration-none" th:href="@{'/movies/page/' + ${currentPage} + '?sortField=title&sortDir=' + ${reverseSortDir}}">
+                    Title
+                </a>
+            </th>
+            <th>
+                <a class="text-white text-decoration-none" th:href="@{'/movies/page/' + ${currentPage} + '?sortField=studio&sortDir=' + ${reverseSortDir}}">
+                    Studio
+                </a>
+            </th>
+            <th>
+                <a class="text-white text-decoration-none" th:href="@{'/movies/page/' + ${currentPage} + '?sortField=duration&sortDir=' + ${reverseSortDir}}">
+                    Duration (min)
+                </a>
+            </th>
+            <th>
+                <a class="text-white text-decoration-none" th:href="@{'/movies/page/' + ${currentPage} + '?sortField=rating&sortDir=' + ${reverseSortDir}}">
+                    Rating
+                </a>
+            </th>
+            <th sec:authorize="hasRole('ADMIN')">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="movie : ${movies}">
+            <td th:text="${movie.id}">1</td>
+            <td th:text="${movie.title}">Inception</td>
+            <td th:text="${movie.studio}">Nolan</td>
+            <td th:text="${movie.duration}">148</td>
+            <td th:text="${movie.rating}">8.8</td>
+            <td sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/movies/edit/{id}(id=${movie.id})}" class="btn btn-primary btn-sm">Edit</a>
+                <a th:href="@{/movies/delete/{id}(id=${movie.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure you want to delete this movie?');">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${totalPages > 1}" class="d-flex justify-content-between align-items-center mt-4">
+        <div>
+            Total Movies: <span class="fw-bold" th:text="${totalItems}"></span>
+        </div>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination mb-0">
+                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{'/movies/page/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Back</a>
+                </li>
+
+                <li class="page-item" th:each="i: ${#numbers.sequence(1, totalPages)}" th:classappend="${currentPage == i} ? 'active'">
+                    <a class="page-link" th:href="@{'/movies/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+                </li>
+
+                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{'/movies/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Forward</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+</body>
+</html>

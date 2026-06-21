@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Cinema Room</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Add Cinema Room</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/cinema-rooms}" th:object="${cinemaRoom}" method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label">Room Code *</label>
+                            <input type="text" class="form-control" th:field="*{roomCode}" required>
+                            <p class="text-danger mt-1" th:if="${#fields.hasErrors('roomCode')}" th:errors="*{roomCode}"></p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Capacity *</label>
+                            <input type="number" class="form-control" min="0" th:field="*{capacity}" required>
+                            <p class="text-danger mt-1" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}"></p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label d-block">Room Type *</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" th:field="*{is3D}" value="true" id="is3DTrue" required>
+                                <label class="form-check-label" for="is3DTrue">3D</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" th:field="*{is3D}" value="false" id="is3DFalse" required>
+                                <label class="form-check-label" for="is3DFalse">Not 3D</label>
+                            </div>
+                            <p class="text-danger mt-1" th:if="${#fields.hasErrors('is3D')}" th:errors="*{is3D}"></p>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a th:href="@{/cinema-rooms}" class="btn btn-secondary">Back</a>
+                            <button type="submit" class="btn btn-success">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

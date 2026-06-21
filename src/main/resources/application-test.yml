@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:cinema_test_db
+    driverClassName: org.h2.Driver
+    username: miha
+    password: test1234
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop # create table at start and drops them at the end
+    show-sql: true
+  h2:
+    console:
+      enabled: true
